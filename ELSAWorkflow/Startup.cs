@@ -1,3 +1,6 @@
+using Elsa;
+using Elsa.Persistence.EntityFramework.Core.Extensions;
+using Elsa.Persistence.EntityFramework.Sqlite;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -16,16 +19,35 @@ namespace ELSAWorkflow
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public IWebHostEnvironment Environment { get; }
+        public IConfiguration Configuration { get; }
+
+        public Startup(IWebHostEnvironment environment, IConfiguration configuration)
         {
+            Environment = environment;
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var elsaSection = Configuration.GetSection("Elsa");
+
+            // Elsa services.
+            services
+                .AddElsa(elsa => elsa
+                    .UseEntityFrameworkPersistence(ef => ef.UseSqlite())
+                    .AddConsoleActivities()
+                    .AddHttpActivities(elsaSection.GetSection("Server").Bind)
+                    .AddQuartzTemporalActivities()
+                    .AddWorkflowsFrom<Startup>()
+                );
+
+            // Elsa API endpoints.
+            services.AddElsaApiEndpoints();
+
+            // For Elsa Dashboard.
+            services.AddRazorPages();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -44,16 +66,20 @@ namespace ELSAWorkflow
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ELSAWorkflow v1"));
             }
 
-            app.UseHttpsRedirection();
+            app
+                .UseHttpsRedirection()
+                .UseStaticFiles() // For Dashboard.
+                .UseHttpActivities()
+                .UseRouting()
+                .UseAuthentication()
+                .UseEndpoints(endpoints =>
+                {
+                    // Elsa API Endpoints are implemented as regular ASP.NET Core API controllers.
+                    endpoints.MapControllers();
 
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+                    // For Dashboard.
+                    endpoints.MapFallbackToPage("/_Host");
+                });
         }
     }
 }
