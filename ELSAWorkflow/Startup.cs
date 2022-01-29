@@ -1,6 +1,7 @@
 using Elsa;
 using Elsa.Persistence.EntityFramework.Core.Extensions;
 using Elsa.Persistence.EntityFramework.Sqlite;
+using ELSAWorkflow.Workflows;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -40,6 +41,8 @@ namespace ELSAWorkflow
                     .AddConsoleActivities()
                     .AddHttpActivities(elsaSection.GetSection("Server").Bind)
                     .AddQuartzTemporalActivities()
+                    .AddEmailActivities()
+                    .AddFileActivities()
                     .AddWorkflowsFrom<Startup>()
                 );
 

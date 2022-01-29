@@ -6,11 +6,19 @@
 
   <ItemGroup>
     <PackageReference Include="Elsa" Version="2.4.2.1" />
+    <PackageReference Include="Elsa.Activities.BlobStorage" Version="2.4.2.1" />
+    <PackageReference Include="Elsa.Activities.Console" Version="2.4.2.1" />
+    <PackageReference Include="Elsa.Activities.Email" Version="2.4.2.1" />
+    <PackageReference Include="Elsa.Activities.File" Version="2.4.2.1" />
     <PackageReference Include="Elsa.Activities.Http" Version="2.4.2.1" />
+    <PackageReference Include="Elsa.Activities.Reflection" Version="1.5.5.1943" />
     <PackageReference Include="Elsa.Activities.Temporal.Quartz" Version="2.4.2.1" />
+    <PackageReference Include="Elsa.Activities.Webhooks" Version="2.4.2.1" />
+    <PackageReference Include="Elsa.Activities.Workflows" Version="1.5.5.1943" />
     <PackageReference Include="Elsa.Designer.Components.Web" Version="2.4.2.1" />
     <PackageReference Include="Elsa.Persistence.EntityFramework.Sqlite" Version="2.4.2.1" />
     <PackageReference Include="Elsa.Server.Api" Version="2.4.2.1" />
+    <PackageReference Include="Elsa.WorkflowDesigner" Version="1.5.5.1943" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
